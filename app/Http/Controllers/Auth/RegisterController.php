@@ -34,6 +34,8 @@ class RegisterController extends Controller
      *
      * @return void
      */
+
+
     public function __construct()
     {
         $this->middleware('guest');
@@ -68,5 +70,19 @@ class RegisterController extends Controller
             'password' => bcrypt($data['password']),
         ]);
 
+    }
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    protected function registered(Request $request, $user)
+    {
+        $user->sendNewUserRegisteredNotification();
+        session()->flush();
+        session()->flash('message', 'Email send successfully');
+        return redirect('/login');
     }
 }
